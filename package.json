@@ -1,0 +1,22 @@
+{
+  "name": "ecommerce-upi-payment-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SanthoshSathasivam/ecommerce-upi-payment-testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SanthoshSathasivam/ecommerce-upi-payment-testing/issues"
+  },
+  "homepage": "https://github.com/SanthoshSathasivam/ecommerce-upi-payment-testing#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5"
+  }
+}

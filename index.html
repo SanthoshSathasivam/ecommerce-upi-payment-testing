@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - Online Store</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+    }
+
+    header {
+      background: #175cd3;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 { margin: 0; }
+
+    .container {
+      max-width: 950px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .product, .checkout {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .product {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .product-image {
+      width: 140px;
+      height: 140px;
+      display: grid;
+      place-items: center;
+      background: #eaf1ff;
+      border-radius: 10px;
+      font-size: 65px;
+    }
+
+    .product-info { flex: 1; }
+
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #175cd3;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 12px 18px;
+      background: #175cd3;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover { background: #1249a8; }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .payment-option {
+      display: block;
+      padding: 14px;
+      border: 1px solid #d4d9e2;
+      border-radius: 8px;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+
+    .payment-option input { margin-right: 8px; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 15px;
+      border: 1px solid #aab2bf;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    #upiSection {
+      margin-top: 18px;
+      padding: 16px;
+      background: #f8faff;
+      border-radius: 8px;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-weight: bold;
+    }
+
+    .success { color: #137333; }
+    .error { color: #b42318; }
+
+    footer {
+      text-align: center;
+      color: #667085;
+      padding: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>ShopEasy</h1>
+    <div>Simple shopping, easy payment</div>
+  </header>
+
+  <main class="container">
+    <section class="product">
+      <div class="product-image" aria-hidden="true">🎧</div>
+
+      <div class="product-info">
+        <h2>Wireless Headphones</h2>
+        <p>Comfortable headphones for everyday use.</p>
+
+        <!-- INTENTIONAL BUG: should display ₹1,499 -->
+        <p class="price">₹999</p>
+
+        <button id="addToCart">Add to Cart</button>
+      </div>
+    </section>
+
+    <section class="checkout">
+      <h2>Checkout</h2>
+      <p id="cartStatus">Your cart is empty.</p>
+      <p><strong>Order total: <span id="total">₹0</span></strong></p>
+
+      <h3>Select Payment Method</h3>
+
+      <label class="payment-option">
+        <input type="radio" name="payment" value="upi" id="upi">
+        UPI Payment
+      </label>
+
+      <label class="payment-option">
+        <input type="radio" name="payment" value="cod" id="cod">
+        Cash on Delivery
+      </label>
+
+      <section id="upiSection" hidden>
+        <label for="upiId">Enter UPI ID</label>
+        <input
+          type="text"
+          id="upiId"
+          placeholder="example@okdemo"
+          autocomplete="off"
+        >
+        <p>Demo only: no real payment will be processed.</p>
+      </section>
+
+      <button id="placeOrder">Place Order</button>
+      <p id="message" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>ShopEasy QA Practice Project — Demo payments only</footer>
+
+  <script>
+    const addToCart = document.getElementById("addToCart");
+    const cartStatus = document.getElementById("cartStatus");
+    const total = document.getElementById("total");
+    const upi = document.getElementById("upi");
+    const cod = document.getElementById("cod");
+    const upiSection = document.getElementById("upiSection");
+    const upiId = document.getElementById("upiId");
+    const placeOrder = document.getElementById("placeOrder");
+    const message = document.getElementById("message");
+
+    let cartCount = 0;
+    const price = 1499;
+
+    addToCart.addEventListener("click", () => {
+      cartCount++;
+      cartStatus.textContent = "Items in cart: " + cartCount;
+      total.textContent =
+        "₹" + (cartCount * price).toLocaleString("en-IN");
+      message.textContent = "";
+    });
+
+    upi.addEventListener("change", () => {
+      upiSection.hidden = false;
+      message.textContent = "";
+      message.className = "";
+    });
+
+    cod.addEventListener("change", () => {
+      upiSection.hidden = true;
+      message.textContent = "";
+      message.className = "";
+    });
+
+    placeOrder.addEventListener("click", () => {
+      message.className = "";
+
+      if (cartCount === 0) {
+        message.textContent = "Please add a product to your cart.";
+        message.className = "error";
+        return;
+      }
+
+      if (!upi.checked && !cod.checked) {
+        message.textContent = "Please select a payment method.";
+        message.className = "error";
+        return;
+      }
+
+      if (cod.checked) {
+        message.textContent =
+          "Order placed with Cash on Delivery.";
+        message.className = "success";
+        return;
+      }
+
+      const value = upiId.value.trim();
+
+      if (!value) {
+        message.textContent = "Please enter your UPI ID.";
+        message.className = "error";
+        return;
+      }
+
+      const validFormat =
+        /^[a-zA-Z0-9._-]{2,}@[a-zA-Z][a-zA-Z0-9]{1,}$/.test(value);
+
+      if (!validFormat) {
+        message.textContent = "Please enter a valid UPI ID.";
+        message.className = "error";
+        return;
+      }
+
+      message.textContent =
+        "Demo payment successful! Order placed.";
+      message.className = "success";
+    });
+  </script>
+</body>
+</html>
